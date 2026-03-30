@@ -214,25 +214,28 @@ def check_spot_listings(state: dict, data: dict):
         token_indices = entry.get("tokens", [])
         token_info = tokens[token_indices[0]] if token_indices and token_indices[0] < len(tokens) else {}
 
+        display_name = token_info.get('name') or name
+        full_name = token_info.get('fullName', '')
         token_id = token_info.get('tokenId', 'N/A')
-        sz_dec = entry.get('szDecimals', 'N/A')
+        sz_dec = token_info.get('szDecimals', 'N/A')
         canonical = token_info.get('isCanonical', 'N/A')
         detected = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         print(Fore.GREEN + Style.BRIGHT + f"\n{'='*60}")
-        print(Fore.GREEN + Style.BRIGHT + f"  NEW SPOT LISTING DETECTED: {name}")
+        print(Fore.GREEN + Style.BRIGHT + f"  NEW SPOT LISTING DETECTED: {display_name}")
         print(Fore.GREEN + Style.BRIGHT + f"{'='*60}")
+        if full_name:
+            print(Fore.GREEN + f"  Full Name  : {full_name}")
         print(Fore.GREEN + f"  Token ID   : {token_id}")
         print(Fore.GREEN + f"  sz Decimals: {sz_dec}")
         print(Fore.GREEN + f"  Canonical  : {canonical}")
         print(Fore.GREEN + f"  Detected   : {detected}")
 
         tg_send(
-            f"🟢 <b>NEW SPOT LISTING</b>\n"
-            f"Token: <b>{name}</b>\n"
+            f"🟢 <b>NEW SPOT LISTING — Hyperliquid</b>\n"
+            f"Token: <b>{display_name}</b>{f' ({full_name})' if full_name else ''}\n"
             f"Token ID: <code>{token_id}</code>\n"
-            f"sz Decimals: {sz_dec}\n"
-            f"Canonical: {canonical}\n"
+            f"sz Decimals: {sz_dec} | Canonical: {canonical}\n"
             f"Detected: {detected}"
         )
 
